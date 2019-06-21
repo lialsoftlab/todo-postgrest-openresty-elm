@@ -1,0 +1,67 @@
+version: '3'
+
+services:
+  pg_db:
+#    image: "postgres:latest"
+    build: 
+      dockerfile: Dockerfile
+      context: ./dockerconf/todo_pg/
+    container_name: todo_pg
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  pg_admin:
+    image: "dpage/pgadmin4"
+    container_name: todo_pg_admin
+    ports:
+      - "8888:80"
+    volumes: 
+      - pg_admin:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: lialsoftlab@yandex.ru
+      PGADMIN_DEFAULT_PASSWORD: 132435
+    depends_on:
+      - pg_db
+
+  pg_rest:
+    image: postgrest/postgrest
+    container_name: todo_pg_rest
+    ports:
+      - "3000:3000"
+    environment:
+      PGRST_DB_URI: postgres://postgres@pg_db:5432/postgres
+      PGRST_DB_SCHEMA: public
+      PGRST_DB_ANON_ROLE: postgres #In production this role should not be the same as the one used for the connection
+    depends_on:
+      - pg_db
+
+  pg_rest_swagger:
+    image: swaggerapi/swagger-ui
+    container_name: todo_pg_rest_swagger
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+    environment:
+      API_URL: http://localhost:3000/
+    depends_on:
+      - pg_rest
+
+#   web:
+#     build:
+#       context: docker_conf/openresty
+#       dockerfile: Dockerfile
+#     ports:
+#       - "8000:80"
+#     volumes:
+#       - ./docker_conf/openresty/src:/opt/src/
+
+#   redis:
+#     image: "redis:latest"
+
+
+volumes:
+  pg_data:
+  pg_admin:
