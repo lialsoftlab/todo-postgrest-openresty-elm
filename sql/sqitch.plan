@@ -2,3 +2,4 @@
 %project=todo
 %uri=https://github.com/lialsoftlab/todo-postgrest-openresty-elm
 
+app-schema 2019-06-23T00:16:40Z Alexey V. Litvinov <lialsoftlab@yandex.ru> # Add schema for all todos objects.
