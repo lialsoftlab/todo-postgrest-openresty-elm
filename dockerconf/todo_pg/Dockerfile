@@ -26,7 +26,7 @@
 FROM postgres:latest
 
 RUN apt-get -y update \
-    && apt-get -y install postgresql-11-pgtap \
+    && apt-get -y install postgresql-12-pgtap \
     && rm -rf /var/lib/apt/lists/*
 
 # make installcheck PGUSER=postgres
